@@ -1,41 +1,58 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const dotenv = require('dotenv');
+const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
+const connectDB = require('./config/db');
+const { isLoggedIn } = require('./middleware/authMiddleware');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// تحميل المتغيرات البيئية
+dotenv.config();
 
-var app = express();
+// الاتصال بقاعدة البيانات
+connectDB();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// إنشاء تطبيق Express
+const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
+// middleware لتحليل البيانات
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cookieParser());
+
+// middleware لاستخدام PUT و DELETE في النماذج
+app.use(methodOverride('_method'));
+
+// المجلدات الثابتة
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// إعداد محرك قوالب EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+// middleware للتحقق من تسجيل الدخول
+app.use(isLoggedIn);
+
+// المسارات
+app.use('/auth', require('./routes/authRoutes'));
+app.use('/todos', require('./routes/todoRoutes'));
+
+// المسار الرئيسي
+app.get('/', (req, res) => {
+  res.render('index', {
+    title: 'الرئيسية'
+  });
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// معالجة المسارات غير الموجودة
+app.use((req, res) => {
+  res.status(404).render('index', {
+    title: 'الصفحة غير موجودة'
+  });
 });
 
-module.exports = app;
+// تشغيل الخادم
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

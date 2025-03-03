@@ -1,5 +1,26 @@
-extends layout
+<%- include('./partials/header') %>
+<%- include('./partials/navbar') %>
 
-block content
-  h1= title
-  p Welcome to #{title}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <div class="card shadow">
+        <div class="card-body">
+          <h1 class="mb-4">أهلاً بك في تطبيق قائمة المهام</h1>
+          <p class="lead">تطبيق لإدارة مهامك اليومية بسهولة وفعالية</p>
+
+          <% if(locals.user) { %>
+            <a href="/todos" class="btn btn-primary btn-lg mt-3">عرض المهام</a>
+          <% } else { %>
+            <div class="mt-4">
+              <a href="/auth/login" class="btn btn-primary btn-lg me-2">تسجيل الدخول</a>
+              <a href="/auth/register" class="btn btn-outline-primary btn-lg">إنشاء حساب</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

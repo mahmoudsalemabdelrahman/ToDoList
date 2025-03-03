@@ -31,7 +31,7 @@ exports.protect = async (req,res,next) =>{
     }
 };
 // التحقق مما إذا كان المستخدم قد قام بتسجيل الدخول لعرض/إخفاء أزرار تسجيل الدخول
-expoets.isLoggedIn = async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
     if(req.cookies.token){
         try{
             const decode = jwt.verify (req.cookies.token, req.process.JWT_SECRET);

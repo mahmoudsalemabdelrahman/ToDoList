@@ -13,7 +13,7 @@ const mongoose = require('mongoose');
     status:{
         type: String,
         enum: ['pending', 'in progress', 'completed'],
-        default: pending
+        default: 'pending'
     },
     dueDate:{
         type:Date

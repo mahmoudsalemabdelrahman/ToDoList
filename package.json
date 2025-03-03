@@ -23,7 +23,9 @@
   },
   "description": "\"ToDolit\"",
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mahmoudsalemabdelrahman/ToDoList.git"
